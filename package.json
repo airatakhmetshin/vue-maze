@@ -38,7 +38,10 @@
     },
     "rules": {
       "vue/require-v-for-key": "off",
-      "vue/no-unused-vars": "off"
+      "vue/no-unused-vars": "off",
+      "guard-for-in": "off",
+      "no-restricted-syntax": "off",
+      "no-param-reassign": "off"
     }
   },
   "browserslist": [
