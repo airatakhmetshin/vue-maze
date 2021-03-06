@@ -1,36 +1,46 @@
 <template>
-  <div style="width: fit-content; border: 1px solid black">
-    <div style="display: flex" v-for="row in grid">
-      <div
-        class="cell"
-        :class="{ 'cell-block': cell.type === 'block', 'cell-player': cell.type === 'player' }"
-        v-for="cell in row"
-      >
-        {{ cell.x }};{{ cell.y }}
+  <div class="d-flex">
+    <div class="grid-wrapper">
+      <div class="d-flex" v-for="row in grid">
+        <div
+          class="cell"
+          :class="{ 'cell-block': cell.type === 'block', 'cell-player': cell.type === 'player' }"
+          v-for="cell in row"
+        >
+          <div v-if="cell.type === 'block'" class="cell-icon icon-brick"></div>
+          <div v-if="cell.type === 'player'" class="cell-emoji">{{ playerIcon }}</div>
+        </div>
       </div>
+    </div>
+    <div>
+      <Sidebar @changeGridSize="updateGridSize" />
     </div>
   </div>
 </template>
 
 <script>
 import Maze from '@/mixins/maze';
+import Sidebar from '@/components/Sidebar.vue';
 
 export default {
-  name: 'HelloWorld',
+  name: 'MazeGrid',
   mixins: [Maze],
+  components: { Sidebar },
   data() {
     return {
-      player: { x: 1, y: 1 },
-      area: {
-        XMax: 10,
-        XMin: 0,
-        YMax: 10,
-        YMin: 0,
-      },
       grid: [],
+      gridXMax: 0,
+      gridXMin: 0,
+      gridYMax: 0,
+      gridYMin: 0,
+      player: { x: 1, y: 1 },
+      playerIcon: null,
     };
   },
   methods: {
+    renderGrid() {
+      this.grid = this.display(this.maze(this.gridXMax, this.gridYMax));
+    },
     renderPlayer() {
       this.grid
         .flat()
@@ -46,23 +56,42 @@ export default {
     isBlock(x, y) {
       return this.grid.flat().some((cell) => cell.x === x && cell.y === y && cell.type === 'block');
     },
+    updateGridSize(payload) {
+      this.gridXMax = payload.XMax;
+      this.gridYMax = payload.YMax;
+
+      this.renderGrid();
+      this.resetPlayer();
+    },
+    resetPlayer() {
+      this.player.x = 1;
+      this.player.y = 1;
+
+      this.renderPlayer();
+    },
+    randomPlayerIcon() {
+      // 🏁
+      const icons = ['🐶', '🐱', '🐭', '🐨', '🐵', '🐸'];
+
+      return [...icons].sort(() => 0.5 - Math.random())[0];
+    },
     move(direction) {
       let newPlayerX = this.player.x;
       let newPlayerY = this.player.y;
 
-      if (direction === 'up' && this.player.y < this.area.YMax) {
+      if (direction === 'up' && this.player.y < this.gridYMax) {
         newPlayerY += 1;
       }
 
-      if (direction === 'down' && this.player.y > this.area.YMin) {
+      if (direction === 'down' && this.player.y > this.gridYMin) {
         newPlayerY -= 1;
       }
 
-      if (direction === 'left' && this.player.x > this.area.XMin) {
+      if (direction === 'left' && this.player.x > this.gridXMin) {
         newPlayerX -= 1;
       }
 
-      if (direction === 'right' && this.player.x < this.area.XMax) {
+      if (direction === 'right' && this.player.x < this.gridXMax) {
         newPlayerX += 1;
       }
 
@@ -83,9 +112,9 @@ export default {
     },
   },
   mounted() {
-    this.grid = this.display(this.maze(5, 5));
-    this.renderPlayer();
-
+    //
+  },
+  created() {
     document.addEventListener('keydown', (event) => {
       switch (event.code) {
         case 'ArrowUp':
@@ -103,19 +132,8 @@ export default {
         default:
       }
     });
+
+    this.playerIcon = this.randomPlayerIcon();
   },
 };
 </script>
-
-<style scoped lang="scss">
-.cell {
-  width: 60px;
-  height: 60px
-}
-.cell-block {
-  background-color: red;
-}
-.cell-player {
-  background-color: green;
-}
-</style>

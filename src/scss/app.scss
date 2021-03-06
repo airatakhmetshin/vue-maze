@@ -6,3 +6,37 @@
     color: #2c3e50;
     margin: 5px;
 }
+
+.grid-wrapper {
+    width: fit-content;
+
+    .cell {
+        width: 40px;
+        height: 40px;
+
+        &.cell-block {
+            background-color: red;
+            border: 1px solid black;
+
+            .cell-icon.icon-brick {
+                background-image: url(./assets/bricks.svg);
+            }
+        }
+
+        &.cell-player {
+            background-color: rgba(78, 239, 21, .2s);
+        }
+
+        .cell-icon {
+            height: 100%;
+            margin: 3px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .cell-emoji {
+            padding: 4px;
+            font-size: 22px;
+        }
+    }
+}
