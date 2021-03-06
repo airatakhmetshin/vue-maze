@@ -1,10 +1,15 @@
+// copy-paste from https://rosettacode.org/wiki/Maze_generation#JavaScript
 const maze = {
   methods: {
-    maze(x, y) {
+    maze(inputX, inputY) {
+      const x = (inputX - 1) / 2;
+      const y = (inputY - 1) / 2;
+
       let j;
       let n = x * y - 1;
 
       if (n < 0) {
+        // eslint-disable-next-line no-alert
         alert('illegal maze dimensions');
 
         return;
@@ -74,16 +79,13 @@ const maze = {
       };
     },
     display(m) {
-      let x;
       const mazeArea = [];
 
       for (let y = 0; y < m.x * 2 + 1; y += 1) {
-        const line = [];
-
         const row = [];
 
         if (y % 2 === 0) {
-          for (x = 0; x < m.y * 2 + 1; x += 1) {
+          for (let x = 0; x < m.y * 2 + 1; x += 1) {
             if (x % 2 === 0) {
               row.push({ type: 'block', x, y });
             } else if (y > 0 && m.verti[y / 2 - 1][Math.floor(x / 2)]) {
@@ -93,7 +95,7 @@ const maze = {
             }
           }
         } else {
-          for (x = 0; x < m.y * 2 + 1; x += 1) {
+          for (let x = 0; x < m.y * 2 + 1; x += 1) {
             if (x % 2 === 0) {
               if (x > 0 && m.horiz[(y - 1) / 2][x / 2 - 1]) {
                 row.push({ type: null, x, y });
@@ -106,14 +108,14 @@ const maze = {
           }
         }
 
+        // start
         if (y === 0) {
-          line[1] = ' ';
-          line[2] = ' ';
-          line[3] = ' ';
+          row[1] = '1';
         }
 
+        // end
         if (m.x * 2 - 1 === y) {
-          line[4 * m.y] = ' ';
+          row[2 * m.y] = '4';
         }
 
         mazeArea.push(row);
