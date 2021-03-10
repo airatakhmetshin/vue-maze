@@ -109,13 +109,13 @@ const maze = {
         }
 
         // start
-        if (y === 0) {
-          row[1] = '1';
-        }
+        // if (y === 0) {
+        //   row[1] = '1';
+        // }
 
         // end
         if (m.x * 2 - 1 === y) {
-          row[2 * m.y] = '4';
+          row[2 * m.y] = { type: 'finish', x: 2 * m.y, y };
         }
 
         mazeArea.push(row);

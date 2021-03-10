@@ -9,11 +9,15 @@
         >
           <div v-if="cell.type === 'block'" class="cell-icon icon-brick"></div>
           <div v-if="cell.type === 'player'" class="cell-emoji">{{ playerIcon }}</div>
+          <div v-if="cell.type === 'finish'" class="cell-emoji">🏁</div>
         </div>
       </div>
     </div>
     <div>
-      <Sidebar @changeGridSize="updateGridSize" />
+      <Sidebar
+        @changeGridSize="updateGridSize"
+        :score="score"
+      />
     </div>
   </div>
 </template>
@@ -35,6 +39,7 @@ export default {
       gridYMin: 0,
       player: { x: 1, y: 1 },
       playerIcon: null,
+      score: 0,
     };
   },
   methods: {
@@ -50,6 +55,22 @@ export default {
             cell.type = 'player';
           } else if (cell.type === 'player') {
             cell.type = null;
+          }
+        });
+    },
+    beforeMoveHook() {
+      this.grid
+        .flat()
+        .filter((cell) => cell.type !== 'block')
+        .filter((cell) => cell.x === this.player.x && cell.y === this.player.y)
+        .forEach((cell) => {
+          switch (cell.type) {
+            case 'finish':
+              this.score += 10;
+              this.renderGrid();
+              this.resetPlayer();
+              break;
+            default:
           }
         });
     },
@@ -70,7 +91,6 @@ export default {
       this.renderPlayer();
     },
     randomPlayerIcon() {
-      // 🏁
       const icons = ['🐶', '🐱', '🐭', '🐨', '🐵', '🐸'];
 
       return [...icons].sort(() => 0.5 - Math.random())[0];
@@ -87,11 +107,11 @@ export default {
         newPlayerY -= 1;
       }
 
-      if (direction === 'left' && this.player.x > this.gridXMin) {
+      if (direction === 'left' && this.player.x > this.gridXMin - 1) {
         newPlayerX -= 1;
       }
 
-      if (direction === 'right' && this.player.x < this.gridXMax) {
+      if (direction === 'right' && this.player.x < this.gridXMax - 1) {
         newPlayerX += 1;
       }
 
@@ -106,6 +126,7 @@ export default {
   watch: {
     player: {
       handler() {
+        this.beforeMoveHook();
         this.renderPlayer();
       },
       deep: true,
