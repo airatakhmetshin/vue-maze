@@ -1,7 +1,7 @@
 <template>
   <div class="px-4">
-    <div class="py-3">
-      <h3>Settings</h3>
+    <div class="pb-4">
+      <h3>Settings ⚙️</h3>
       <div>
         <label for="exampleFormControlInput1" class="form-label">Grid size</label>
         <select
@@ -16,9 +16,13 @@
         </select>
       </div>
     </div>
-    <div class="py-3">
-      <h3>Score</h3>
+    <div class="pb-4">
+      <h3>Score 🎯</h3>
       <h2>{{ score }}</h2>
+    </div>
+    <div class="pb-4">
+      <h3>Control ⌨</h3>
+      <h3>️⬆️<br>⬅️ ⬇️️ ➡️</h3>
     </div>
   </div>
 </template>
