@@ -4,12 +4,16 @@
       <div class="d-flex" v-for="row in grid">
         <div
           class="cell"
-          :class="{ 'cell-block': cell.type === 'block', 'cell-player': cell.type === 'player' }"
+          :class="{
+            'cell-block': cell.type === CELL_TYPES.block,
+            'cell-player': cell.type === CELL_TYPES.player
+          }"
           v-for="cell in row"
         >
-          <div v-if="cell.type === 'block'" class="cell-icon icon-brick"></div>
-          <div v-if="cell.type === 'player'" class="cell-emoji">{{ playerIcon }}</div>
-          <div v-if="cell.type === 'finish'" class="cell-emoji">🏁</div>
+          <div v-if="cell.type === CELL_TYPES.block" class="cell-icon icon-brick"></div>
+          <div v-if="cell.type === CELL_TYPES.player" class="cell-emoji">{{ playerIcon }}</div>
+          <div v-if="cell.type === CELL_TYPES.strawberry" class="cell-emoji">🍓</div>
+          <div v-if="cell.type === CELL_TYPES.finish" class="cell-emoji">🏁</div>
         </div>
       </div>
     </div>
@@ -23,12 +27,14 @@
 </template>
 
 <script>
+import Constants from '@/mixins/constants';
 import Maze from '@/mixins/maze';
+import Strawberries from '@/mixins/strawberries';
 import Sidebar from '@/components/Sidebar.vue';
 
 export default {
   name: 'MazeGrid',
-  mixins: [Maze],
+  mixins: [Constants, Maze, Strawberries],
   components: { Sidebar },
   data() {
     return {
@@ -37,23 +43,37 @@ export default {
       gridXMin: 0,
       gridYMax: 0,
       gridYMin: 0,
-      player: { x: 1, y: 1 },
+      player: null,
       playerIcon: null,
       score: 0,
     };
   },
   methods: {
     renderGrid() {
-      this.grid = this.display(this.maze(this.gridXMax, this.gridYMax));
+      const grid = this.display(this.maze(this.gridXMax, this.gridYMax));
+
+      // init strawberries
+      const strawberries = this.getStrawberries(grid, this.gridXMax);
+      grid
+        .flat()
+        .forEach((cell) => {
+          strawberries.forEach((strawberry) => {
+            if (cell.x === strawberry.x && cell.y === strawberry.y) {
+              cell.type = this.CELL_TYPES.strawberry;
+            }
+          });
+        });
+
+      this.grid = grid;
     },
     renderPlayer() {
       this.grid
         .flat()
-        .filter((cell) => cell.type !== 'block')
+        .filter((cell) => cell.type !== this.CELL_TYPES.block)
         .forEach((cell) => {
           if (cell.x === this.player.x && cell.y === this.player.y) {
-            cell.type = 'player';
-          } else if (cell.type === 'player') {
+            cell.type = this.CELL_TYPES.player;
+          } else if (cell.type === this.CELL_TYPES.player) {
             cell.type = null;
           }
         });
@@ -61,21 +81,26 @@ export default {
     beforeMoveHook() {
       this.grid
         .flat()
-        .filter((cell) => cell.type !== 'block')
+        .filter((cell) => cell.type !== this.CELL_TYPES.block)
         .filter((cell) => cell.x === this.player.x && cell.y === this.player.y)
         .forEach((cell) => {
           switch (cell.type) {
-            case 'finish':
-              this.score += 10;
+            case this.CELL_TYPES.finish:
+              this.score += this.POINTS_FOR_FINISH;
               this.renderGrid();
               this.resetPlayer();
+              break;
+            case this.CELL_TYPES.strawberry:
+              this.score += this.POINTS_FOR_STRAWBERRY;
               break;
             default:
           }
         });
     },
     isBlock(x, y) {
-      return this.grid.flat().some((cell) => cell.x === x && cell.y === y && cell.type === 'block');
+      return this.grid
+        .flat()
+        .some((cell) => cell.x === x && cell.y === y && cell.type === this.CELL_TYPES.block);
     },
     updateGridSize(payload) {
       this.gridXMax = payload.XMax;
@@ -85,15 +110,11 @@ export default {
       this.resetPlayer();
     },
     resetPlayer() {
-      this.player.x = 1;
-      this.player.y = 1;
-
+      this.player = { ...this.PLAYER_START };
       this.renderPlayer();
     },
     randomPlayerIcon() {
-      const icons = ['🐶', '🐱', '🐭', '🐨', '🐵', '🐸'];
-
-      return [...icons].sort(() => 0.5 - Math.random())[0];
+      return [...this.ICONS].sort(() => 0.5 - Math.random())[0];
     },
     move(direction) {
       let newPlayerX = this.player.x;
@@ -133,7 +154,8 @@ export default {
     },
   },
   mounted() {
-    //
+    this.player = { ...this.PLAYER_START };
+    this.playerIcon = this.randomPlayerIcon();
   },
   created() {
     document.addEventListener('keydown', (event) => {
@@ -153,8 +175,6 @@ export default {
         default:
       }
     });
-
-    this.playerIcon = this.randomPlayerIcon();
   },
 };
 </script>
