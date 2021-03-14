@@ -2,7 +2,7 @@
 
 The maze game (MVP) built with Vue.js
 
-##[🎮 Play 🎮](https://airatakhmetshin.github.io/vue-maze/)
+**[🎮 Play 🎮](https://airatakhmetshin.github.io/vue-maze/)**
 
 ![screenshot](static/screenshot.png)
 
