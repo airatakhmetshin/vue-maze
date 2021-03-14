@@ -1,19 +1,21 @@
 <template>
-  <div class="px-4">
+  <div class="d-flex flex-column h-100 px-4">
     <div class="pb-4">
       <h3>Settings ⚙️</h3>
-      <div>
-        <label for="exampleFormControlInput1" class="form-label">Grid size</label>
-        <select
-          id="exampleFormControlInput1"
-          class="form-select"
-          v-model="settings.gridSizeSelected"
-          @change="changeGridSize()"
-        >
-          <option v-for="option in settings.gridSizeOptions" :value="option">
-            {{ option }}
-          </option>
-        </select>
+      <div class="row">
+        <label for="gridSizeInput" class="col-auto d-flex align-items-center">Grid size:</label>
+        <div class="col">
+          <select
+            id="gridSizeInput"
+            class="form-select"
+            v-model="settings.gridSizeSelected"
+            @change="changeGridSize()"
+          >
+            <option v-for="option in settings.gridSizeOptions" :value="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="pb-4">
@@ -23,6 +25,9 @@
     <div class="pb-4">
       <h3>Control ⌨</h3>
       <h3>️⬆️<br>⬅️ ⬇️️ ➡️</h3>
+    </div>
+    <div class="pb-4 mt-auto d-flex justify-content-center">
+      <a class="github-link" href="https://github.com/airatakhmetshin/vue-maze" target="_blank" />
     </div>
   </div>
 </template>
@@ -56,3 +61,19 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.github-link {
+  display: flex;
+  width: 25px;
+  height: 25px;
+  background-image: url("../assets/github.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+</style>

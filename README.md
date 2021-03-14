@@ -1,24 +1,13 @@
-# test-app2
+# vue-maze
 
-## Project setup
+The maze game (MVP) built with Vue.js
+
+**[🎮 Play 🎮](https://airatakhmetshin.github.io/vue-maze/)**
+
+![screenshot](static/screenshot.png)
+
+### Setup
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
 npm run serve
 ```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
