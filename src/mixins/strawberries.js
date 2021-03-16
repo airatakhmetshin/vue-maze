@@ -7,11 +7,11 @@ const strawberries = {
       const flatted = grid
         .flat()
         .filter((cell) => {
-          if (cell.type === this.CELL_TYPES.block) {
-            return false;
-          }
-
-          if (cell.type === this.CELL_TYPES.player) {
+          if ([
+            this.CELL_TYPES.block,
+            this.CELL_TYPES.player,
+            this.CELL_TYPES.finish,
+          ].includes(cell.type)) {
             return false;
           }
 
