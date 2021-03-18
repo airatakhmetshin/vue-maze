@@ -18,10 +18,7 @@
       </div>
     </div>
     <div>
-      <Sidebar
-        @changeGridSize="updateGridSize"
-        :score="score"
-      />
+      <Sidebar @changeGridSize="updateGridSize" />
     </div>
   </div>
 </template>
@@ -45,7 +42,6 @@ export default {
       gridYMin: 0,
       player: null,
       playerIcon: null,
-      score: 0,
     };
   },
   methods: {
@@ -86,12 +82,12 @@ export default {
         .forEach((cell) => {
           switch (cell.type) {
             case this.CELL_TYPES.finish:
-              this.score += this.POINTS_FOR_FINISH;
+              this.$store.dispatch('ADD_POINTS', this.POINTS_FOR_FINISH);
               this.renderGrid();
               this.resetPlayer();
               break;
             case this.CELL_TYPES.strawberry:
-              this.score += this.POINTS_FOR_STRAWBERRY;
+              this.$store.dispatch('ADD_POINTS', this.POINTS_FOR_STRAWBERRY);
               break;
             default:
           }

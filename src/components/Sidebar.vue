@@ -20,7 +20,7 @@
     </div>
     <div class="pb-4">
       <h3>Score 🎯</h3>
-      <h2>{{ score }}</h2>
+      <h2>{{ this.$store.state.score }}</h2>
     </div>
     <div class="pb-4">
       <h3>Control ⌨</h3>
@@ -34,9 +34,6 @@
 
 <script>
 export default {
-  props: {
-    score: Number,
-  },
   name: 'Sidebar',
   data() {
     return {
