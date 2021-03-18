@@ -2,7 +2,7 @@
   <div class="d-flex flex-column h-100 px-4">
     <div class="pb-4">
       <h3>Settings ⚙️</h3>
-      <div class="row">
+      <div class="row pb-1">
         <label for="gridSizeInput" class="col-auto d-flex align-items-center">Grid size:</label>
         <div class="col">
           <select
@@ -17,10 +17,18 @@
           </select>
         </div>
       </div>
+      <div class="row">
+        <label class="col-auto d-flex align-items-center">Reset score:</label>
+        <div class="col">
+          <button class="btn btn-danger" type="button" @click="$store.dispatch('RESET_SCORE')">
+            RESET
+          </button>
+        </div>
+      </div>
     </div>
     <div class="pb-4">
       <h3>Score 🎯</h3>
-      <h2>{{ score }}</h2>
+      <h2>{{ this.$store.state.score }}</h2>
     </div>
     <div class="pb-4">
       <h3>Control ⌨</h3>
@@ -34,9 +42,6 @@
 
 <script>
 export default {
-  props: {
-    score: Number,
-  },
   name: 'Sidebar',
   data() {
     return {

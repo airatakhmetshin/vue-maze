@@ -12,6 +12,9 @@ export default {
   components: {
     MazeGrid,
   },
+  mounted() {
+    this.$store.dispatch('RESTORE_SCORE');
+  },
 };
 </script>
 
