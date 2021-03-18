@@ -19,6 +19,10 @@ export default new Vuex.Store({
         commit('SET_SCORE', localStorage.getItem('score'));
       }
     },
+    RESET_SCORE({ commit }) {
+      commit('SET_SCORE', 0);
+      localStorage.removeItem('score');
+    },
     ADD_POINTS({ commit, state }, points) {
       let { score } = state;
 

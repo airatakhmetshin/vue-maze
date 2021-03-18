@@ -2,7 +2,7 @@
   <div class="d-flex flex-column h-100 px-4">
     <div class="pb-4">
       <h3>Settings ⚙️</h3>
-      <div class="row">
+      <div class="row pb-1">
         <label for="gridSizeInput" class="col-auto d-flex align-items-center">Grid size:</label>
         <div class="col">
           <select
@@ -15,6 +15,14 @@
               {{ option }}
             </option>
           </select>
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-auto d-flex align-items-center">Reset score:</label>
+        <div class="col">
+          <button class="btn btn-danger" type="button" @click="$store.dispatch('RESET_SCORE')">
+            RESET
+          </button>
         </div>
       </div>
     </div>
