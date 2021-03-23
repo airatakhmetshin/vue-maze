@@ -12,7 +12,7 @@
   position: absolute;
   width: 100%;
   z-index: 1;
-  opacity: 0.9;
+  opacity: 0.3;
   display: flex;
   justify-content: center;
   align-items: center;

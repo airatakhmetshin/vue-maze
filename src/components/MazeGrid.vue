@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex">
     <div class="grid-wrapper">
-      <PauseModal v-if="isPaused" />
+      <PauseModal v-if="$store.state.pause.isPaused" />
       <div class="d-flex" v-for="row in grid">
         <div
           class="cell"
@@ -142,12 +142,9 @@ export default {
       this.player.x = newPlayerX;
       this.player.y = newPlayerY;
     },
-    suspendOrResume() {
-      this.isPaused = this.isPaused !== true;
-    },
     keyboardHandler(event) {
       const arrows = (code) => {
-        if (this.isPaused) {
+        if (this.$store.state.pause.isPaused) {
           return;
         }
 
@@ -170,7 +167,7 @@ export default {
 
       switch (event.code) {
         case 'Space':
-          this.suspendOrResume();
+          this.$store.dispatch('SUSPEND_OR_RESUME');
           break;
         default:
           arrows(event.code);
