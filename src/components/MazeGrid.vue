@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex">
     <div class="grid-wrapper">
+      <PauseModal v-if="isPaused" />
       <div class="d-flex" v-for="row in grid">
         <div
           class="cell"
@@ -28,11 +29,12 @@ import Constants from '@/mixins/constants';
 import Maze from '@/mixins/maze';
 import Strawberries from '@/mixins/strawberries';
 import Sidebar from '@/components/Sidebar.vue';
+import PauseModal from '@/components/PauseModal.vue';
 
 export default {
   name: 'MazeGrid',
   mixins: [Constants, Maze, Strawberries],
-  components: { Sidebar },
+  components: { Sidebar, PauseModal },
   data() {
     return {
       grid: [],
@@ -42,6 +44,7 @@ export default {
       gridYMin: 0,
       player: null,
       playerIcon: null,
+      isPaused: false,
     };
   },
   methods: {
@@ -139,6 +142,40 @@ export default {
       this.player.x = newPlayerX;
       this.player.y = newPlayerY;
     },
+    suspendOrResume() {
+      this.isPaused = this.isPaused !== true;
+    },
+    keyboardHandler(event) {
+      const arrows = (code) => {
+        if (this.isPaused) {
+          return;
+        }
+
+        switch (code) {
+          case 'ArrowUp':
+            this.move('up');
+            break;
+          case 'ArrowDown':
+            this.move('down');
+            break;
+          case 'ArrowLeft':
+            this.move('left');
+            break;
+          case 'ArrowRight':
+            this.move('right');
+            break;
+          default:
+        }
+      };
+
+      switch (event.code) {
+        case 'Space':
+          this.suspendOrResume();
+          break;
+        default:
+          arrows(event.code);
+      }
+    },
   },
   watch: {
     player: {
@@ -154,23 +191,7 @@ export default {
     this.playerIcon = this.randomPlayerIcon();
   },
   created() {
-    document.addEventListener('keydown', (event) => {
-      switch (event.code) {
-        case 'ArrowUp':
-          this.move('up');
-          break;
-        case 'ArrowDown':
-          this.move('down');
-          break;
-        case 'ArrowLeft':
-          this.move('left');
-          break;
-        case 'ArrowRight':
-          this.move('right');
-          break;
-        default:
-      }
-    });
+    document.addEventListener('keydown', (event) => this.keyboardHandler(event));
   },
 };
 </script>
