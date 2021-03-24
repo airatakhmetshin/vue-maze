@@ -8,10 +8,23 @@ export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     score: 0,
+    timer: 0,
+    isPlayerAlive: false,
+  },
+  getters: {
+    isPlayerDead(state) {
+      return !state.isPlayerAlive;
+    },
   },
   mutations: {
     SET_SCORE(state, score) {
       state.score = Number(score);
+    },
+    SET_TIMER(state, timer) {
+      state.timer = Number(timer);
+    },
+    SET_PLAYER_ALIVE(state, alive) {
+      state.isPlayerAlive = alive;
     },
   },
   actions: {
@@ -29,6 +42,11 @@ export default new Vuex.Store({
 
       commit('SET_SCORE', score += points);
       localStorage.setItem('score', state.score);
+    },
+    D_TIMER({ commit, state }) {
+      let { timer } = state;
+
+      commit('SET_TIMER', timer -= 1);
     },
   },
   modules: {

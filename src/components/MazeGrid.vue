@@ -2,6 +2,7 @@
   <div class="d-flex">
     <div class="main-container">
       <div class="grid-wrapper">
+        <StartGameModal v-if="$store.getters.isPlayerDead" />
         <PauseModal v-if="$store.state.pause.isPaused" />
         <div class="d-flex" v-for="row in grid">
           <div
@@ -30,13 +31,15 @@
 import Constants from '@/mixins/constants';
 import Maze from '@/mixins/maze';
 import Strawberries from '@/mixins/strawberries';
+import Timer from '@/mixins/timer';
 import Sidebar from '@/components/Sidebar.vue';
+import StartGameModal from '@/components/StartGameModal.vue';
 import PauseModal from '@/components/PauseModal.vue';
 
 export default {
   name: 'MazeGrid',
-  mixins: [Constants, Maze, Strawberries],
-  components: { Sidebar, PauseModal },
+  mixins: [Constants, Maze, Strawberries, Timer],
+  components: { StartGameModal, Sidebar, PauseModal },
   data() {
     return {
       grid: [],
@@ -47,6 +50,7 @@ export default {
       player: null,
       playerIcon: null,
       isPaused: false,
+      currentGridSize: {},
     };
   },
   methods: {
@@ -104,8 +108,14 @@ export default {
         .some((cell) => cell.x === x && cell.y === y && cell.type === this.CELL_TYPES.block);
     },
     updateGridSize(payload) {
-      this.gridXMax = payload.XMax;
-      this.gridYMax = payload.YMax;
+      if (payload) {
+        this.currentGridSize = this.GRID_SIZE_OPTIONS[payload];
+      }
+      this.gridXMax = this.currentGridSize.x;
+      this.gridYMax = this.currentGridSize.y;
+
+      this.$store.commit('SET_PLAYER_ALIVE', false);
+      this.$store.commit('SET_TIMER', this.currentGridSize.time);
 
       this.renderGrid();
       this.resetPlayer();
@@ -146,7 +156,7 @@ export default {
     },
     keyboardHandler(event) {
       const arrows = (code) => {
-        if (this.$store.state.pause.isPaused) {
+        if (this.$store.getters.isPlayerDead || this.$store.state.pause.isPaused) {
           return;
         }
 
@@ -169,7 +179,14 @@ export default {
 
       switch (event.code) {
         case 'Space':
-          this.$store.dispatch('SUSPEND_OR_RESUME');
+          if (this.$store.state.isPlayerAlive) {
+            // Pause/unpause game
+            this.$store.dispatch('SUSPEND_OR_RESUME');
+          } else if (this.$store.state.timer > 0) {
+            // Respawn player
+            this.$store.commit('SET_PLAYER_ALIVE', true);
+            this.startTimer();
+          }
           break;
         default:
           arrows(event.code);
