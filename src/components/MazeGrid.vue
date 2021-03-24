@@ -1,20 +1,22 @@
 <template>
   <div class="d-flex">
-    <div class="grid-wrapper">
-      <PauseModal v-if="$store.state.pause.isPaused" />
-      <div class="d-flex" v-for="row in grid">
-        <div
-          class="cell"
-          :class="{
-            'cell-block': cell.type === CELL_TYPES.block,
-            'cell-player': cell.type === CELL_TYPES.player
-          }"
-          v-for="cell in row"
-        >
-          <div v-if="cell.type === CELL_TYPES.block" class="cell-icon icon-brick"></div>
-          <div v-if="cell.type === CELL_TYPES.player" class="cell-emoji">{{ playerIcon }}</div>
-          <div v-if="cell.type === CELL_TYPES.strawberry" class="cell-emoji">🍓</div>
-          <div v-if="cell.type === CELL_TYPES.finish" class="cell-emoji">🏁</div>
+    <div class="main-container">
+      <div class="grid-wrapper">
+        <PauseModal v-if="$store.state.pause.isPaused" />
+        <div class="d-flex" v-for="row in grid">
+          <div
+            class="cell"
+            :class="{
+              'cell-block': cell.type === CELL_TYPES.block,
+              'cell-player': cell.type === CELL_TYPES.player
+            }"
+            v-for="cell in row"
+          >
+            <div v-if="cell.type === CELL_TYPES.block" class="cell-icon icon-brick"></div>
+            <div v-if="cell.type === CELL_TYPES.player" class="cell-emoji">{{ playerIcon }}</div>
+            <div v-if="cell.type === CELL_TYPES.strawberry" class="cell-emoji">🍓</div>
+            <div v-if="cell.type === CELL_TYPES.finish" class="cell-emoji">🏁</div>
+          </div>
         </div>
       </div>
     </div>
