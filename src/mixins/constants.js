@@ -15,17 +15,17 @@ const constants = {
         '11x11': {
           x: 11,
           y: 11,
-          time: 5,
+          time: 10,
         },
         '15x15': {
           x: 15,
           y: 15,
-          time: 45,
+          time: 20,
         },
         '21x21': {
           x: 21,
           y: 21,
-          time: 60,
+          time: 30,
         },
       },
     };

@@ -1,20 +1,6 @@
 <template>
-  <div class="pause-modal">
+  <div class="custom-modals pause-modal">
     <h1>PAUSE</h1>
+    <h4>(press space)</h4>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.pause-modal {
-  background-color: black;
-  color: red;
-  height: 100%;
-  position: absolute;
-  width: 100%;
-  z-index: 1;
-  opacity: 0.3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>

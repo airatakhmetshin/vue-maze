@@ -4,19 +4,21 @@ const timer = {
       this.interval = setInterval(() => {
         if (this.$store.getters.isPlayerDead) {
           this.stopTimer();
-        } else if (this.$store.state.timer.timer === 0) {
-          this.playerNotAlive();
-          this.stopTimer();
         } else {
           this.$store.dispatch('D_TIMER');
+
+          if (this.$store.state.timer.timer === 0) {
+            this.setPlayerNotAlive();
+          }
         }
       }, 1000);
     },
     stopTimer() {
       clearInterval(this.interval);
     },
-    playerNotAlive() {
+    setPlayerNotAlive() {
       this.updateGridSize();
+      this.stopTimer();
     },
   },
   mounted() {

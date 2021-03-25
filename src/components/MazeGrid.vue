@@ -39,7 +39,7 @@ import PauseModal from '@/components/PauseModal.vue';
 export default {
   name: 'MazeGrid',
   mixins: [Constants, Maze, Strawberries, Timer],
-  components: { StartGameModal, Sidebar, PauseModal },
+  components: { Sidebar, StartGameModal, PauseModal },
   data() {
     return {
       grid: [],
@@ -49,7 +49,6 @@ export default {
       gridYMin: 0,
       player: null,
       playerIcon: null,
-      isPaused: false,
       currentGridSize: {},
     };
   },
