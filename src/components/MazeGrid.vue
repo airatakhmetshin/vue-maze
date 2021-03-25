@@ -112,6 +112,8 @@ export default {
       this.gridXMax = this.currentGridSize.x;
       this.gridYMax = this.currentGridSize.y;
 
+      this.stopTimer();
+
       this.$store.commit('SET_PLAYER_ALIVE', false);
       this.$store.commit('SET_TIMER', this.currentGridSize.time);
 
