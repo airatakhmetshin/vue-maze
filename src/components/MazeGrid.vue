@@ -1,19 +1,23 @@
 <template>
   <div class="d-flex">
-    <div class="grid-wrapper">
-      <div class="d-flex" v-for="row in grid">
-        <div
-          class="cell"
-          :class="{
-            'cell-block': cell.type === CELL_TYPES.block,
-            'cell-player': cell.type === CELL_TYPES.player
-          }"
-          v-for="cell in row"
-        >
-          <div v-if="cell.type === CELL_TYPES.block" class="cell-icon icon-brick"></div>
-          <div v-if="cell.type === CELL_TYPES.player" class="cell-emoji">{{ playerIcon }}</div>
-          <div v-if="cell.type === CELL_TYPES.strawberry" class="cell-emoji">🍓</div>
-          <div v-if="cell.type === CELL_TYPES.finish" class="cell-emoji">🏁</div>
+    <div class="main-container">
+      <div class="grid-wrapper">
+        <StartGameModal v-if="$store.getters.isPlayerDead" />
+        <PauseModal v-if="$store.state.pause.isPaused" />
+        <div class="d-flex" v-for="row in grid">
+          <div
+            class="cell"
+            :class="{
+              'cell-block': cell.type === CELL_TYPES.block,
+              'cell-player': cell.type === CELL_TYPES.player
+            }"
+            v-for="cell in row"
+          >
+            <div v-if="cell.type === CELL_TYPES.block" class="cell-icon icon-brick"></div>
+            <div v-if="cell.type === CELL_TYPES.player" class="cell-emoji">{{ playerIcon }}</div>
+            <div v-if="cell.type === CELL_TYPES.strawberry" class="cell-emoji">🍓</div>
+            <div v-if="cell.type === CELL_TYPES.finish" class="cell-emoji">🏁</div>
+          </div>
         </div>
       </div>
     </div>
@@ -27,12 +31,15 @@
 import Constants from '@/mixins/constants';
 import Maze from '@/mixins/maze';
 import Strawberries from '@/mixins/strawberries';
+import Timer from '@/mixins/timer';
 import Sidebar from '@/components/Sidebar.vue';
+import StartGameModal from '@/components/StartGameModal.vue';
+import PauseModal from '@/components/PauseModal.vue';
 
 export default {
   name: 'MazeGrid',
-  mixins: [Constants, Maze, Strawberries],
-  components: { Sidebar },
+  mixins: [Constants, Maze, Strawberries, Timer],
+  components: { Sidebar, StartGameModal, PauseModal },
   data() {
     return {
       grid: [],
@@ -42,6 +49,7 @@ export default {
       gridYMin: 0,
       player: null,
       playerIcon: null,
+      currentGridSize: {},
     };
   },
   methods: {
@@ -83,8 +91,7 @@ export default {
           switch (cell.type) {
             case this.CELL_TYPES.finish:
               this.$store.dispatch('ADD_POINTS', this.POINTS_FOR_FINISH);
-              this.renderGrid();
-              this.resetPlayer();
+              this.updateGridSize();
               break;
             case this.CELL_TYPES.strawberry:
               this.$store.dispatch('ADD_POINTS', this.POINTS_FOR_STRAWBERRY);
@@ -99,8 +106,14 @@ export default {
         .some((cell) => cell.x === x && cell.y === y && cell.type === this.CELL_TYPES.block);
     },
     updateGridSize(payload) {
-      this.gridXMax = payload.XMax;
-      this.gridYMax = payload.YMax;
+      if (payload) {
+        this.currentGridSize = this.GRID_SIZE_OPTIONS[payload];
+      }
+      this.gridXMax = this.currentGridSize.x;
+      this.gridYMax = this.currentGridSize.y;
+
+      this.$store.commit('SET_PLAYER_ALIVE', false);
+      this.$store.commit('SET_TIMER', this.currentGridSize.time);
 
       this.renderGrid();
       this.resetPlayer();
@@ -139,6 +152,44 @@ export default {
       this.player.x = newPlayerX;
       this.player.y = newPlayerY;
     },
+    keyboardHandler(event) {
+      const arrows = (code) => {
+        if (this.$store.getters.isPlayerDead || this.$store.state.pause.isPaused) {
+          return;
+        }
+
+        switch (code) {
+          case 'ArrowUp':
+            this.move('up');
+            break;
+          case 'ArrowDown':
+            this.move('down');
+            break;
+          case 'ArrowLeft':
+            this.move('left');
+            break;
+          case 'ArrowRight':
+            this.move('right');
+            break;
+          default:
+        }
+      };
+
+      switch (event.code) {
+        case 'Space':
+          if (this.$store.state.isPlayerAlive) {
+            // Pause/unpause game
+            this.$store.dispatch('SUSPEND_OR_RESUME');
+          } else if (this.$store.state.timer.timer > 0) {
+            // Respawn player
+            this.$store.commit('SET_PLAYER_ALIVE', true);
+            this.startTimer();
+          }
+          break;
+        default:
+          arrows(event.code);
+      }
+    },
   },
   watch: {
     player: {
@@ -154,23 +205,7 @@ export default {
     this.playerIcon = this.randomPlayerIcon();
   },
   created() {
-    document.addEventListener('keydown', (event) => {
-      switch (event.code) {
-        case 'ArrowUp':
-          this.move('up');
-          break;
-        case 'ArrowDown':
-          this.move('down');
-          break;
-        case 'ArrowLeft':
-          this.move('left');
-          break;
-        case 'ArrowRight':
-          this.move('right');
-          break;
-        default:
-      }
-    });
+    document.addEventListener('keydown', (event) => this.keyboardHandler(event));
   },
 };
 </script>

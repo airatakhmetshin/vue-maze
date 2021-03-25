@@ -11,8 +11,8 @@
             v-model="settings.gridSizeSelected"
             @change="changeGridSize()"
           >
-            <option v-for="option in settings.gridSizeOptions" :value="option">
-              {{ option }}
+            <option v-for="(option, key) in GRID_SIZE_OPTIONS" :value="key">
+              {{ key }}
             </option>
           </select>
         </div>
@@ -27,8 +27,12 @@
       </div>
     </div>
     <div class="pb-4">
+      <h3>Time ⏱</h3>
+      <h2>{{ $store.state.timer.timer }}</h2>
+    </div>
+    <div class="pb-4">
       <h3>Score 🎯</h3>
-      <h2>{{ this.$store.state.score }}</h2>
+      <h2>{{ $store.state.score.score }}</h2>
     </div>
     <div class="pb-4">
       <h3>Control ⌨</h3>
@@ -41,24 +45,21 @@
 </template>
 
 <script>
+import Constants from '@/mixins/constants';
+
 export default {
   name: 'Sidebar',
+  mixins: [Constants],
   data() {
     return {
       settings: {
-        gridSizeSelected: '11x11', // default grid size
-        gridSizeOptions: ['11x11', '15x15', '21x21'],
+        gridSizeSelected: '11x11',
       },
     };
   },
   methods: {
     changeGridSize() {
-      let [XMax, YMax] = this.settings.gridSizeSelected.split('x');
-
-      XMax = Number(XMax);
-      YMax = Number(YMax);
-
-      this.$emit('changeGridSize', { XMax, YMax });
+      this.$emit('changeGridSize', this.settings.gridSizeSelected);
     },
   },
   mounted() {
