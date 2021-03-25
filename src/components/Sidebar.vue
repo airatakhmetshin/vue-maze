@@ -28,11 +28,11 @@
     </div>
     <div class="pb-4">
       <h3>Time ⏱</h3>
-      <h2>{{ $store.state.timer }}</h2>
+      <h2>{{ $store.state.timer.timer }}</h2>
     </div>
     <div class="pb-4">
       <h3>Score 🎯</h3>
-      <h2>{{ $store.state.score }}</h2>
+      <h2>{{ $store.state.score.score }}</h2>
     </div>
     <div class="pb-4">
       <h3>Control ⌨</h3>

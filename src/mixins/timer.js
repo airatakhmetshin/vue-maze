@@ -2,7 +2,9 @@ const timer = {
   methods: {
     startTimer() {
       this.interval = setInterval(() => {
-        if (this.$store.state.timer === 0) {
+        if (this.$store.getters.isPlayerDead) {
+          this.stopTimer();
+        } else if (this.$store.state.timer.timer === 0) {
           this.playerNotAlive();
           this.stopTimer();
         } else {

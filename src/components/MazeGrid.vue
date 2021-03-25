@@ -92,8 +92,7 @@ export default {
           switch (cell.type) {
             case this.CELL_TYPES.finish:
               this.$store.dispatch('ADD_POINTS', this.POINTS_FOR_FINISH);
-              this.renderGrid();
-              this.resetPlayer();
+              this.updateGridSize();
               break;
             case this.CELL_TYPES.strawberry:
               this.$store.dispatch('ADD_POINTS', this.POINTS_FOR_STRAWBERRY);
@@ -182,7 +181,7 @@ export default {
           if (this.$store.state.isPlayerAlive) {
             // Pause/unpause game
             this.$store.dispatch('SUSPEND_OR_RESUME');
-          } else if (this.$store.state.timer > 0) {
+          } else if (this.$store.state.timer.timer > 0) {
             // Respawn player
             this.$store.commit('SET_PLAYER_ALIVE', true);
             this.startTimer();
